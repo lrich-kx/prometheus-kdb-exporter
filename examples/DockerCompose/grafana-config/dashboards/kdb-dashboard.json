@@ -22,15 +22,14 @@
     {
       "cacheTimeout": null,
       "colorBackground": false,
-      "colorPrefix": false,
       "colorValue": false,
       "colors": [
         "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#73BF69"
+        "#FF9830",
+        "#d44a3a"
       ],
-      "datasource": null,
-      "description": "kdb+ version",
+      "datasource": "Prometheus",
+      "description": "Total number of files opened by the user. This does not count files opened by the kdb+ sub system.",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -64,8 +63,8 @@
       "nullText": null,
       "options": {},
       "postfix": "",
-      "postfixFontSize": "30%",
-      "prefix": "kdb+ version",
+      "postfixFontSize": "50%",
+      "prefix": "",
       "prefixFontSize": "50%",
       "rangeMaps": [
         {
@@ -85,18 +84,18 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kdb_info{instance=\"$Server\"}",
-          "instant": true,
-          "legendFormat": "{{release_version}}",
+          "expr": "kdb_handles_total{instance=\"$Server\"}",
+          "legendFormat": "Opened IPC File Descriptors",
           "refId": "A"
         }
       ],
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "Open Handles",
+      "transparent": true,
       "type": "singlestat",
-      "valueFontSize": "50%",
+      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -104,7 +103,7 @@
           "value": "null"
         }
       ],
-      "valueName": "name"
+      "valueName": "current"
     },
     {
       "aliasColors": {},
@@ -830,7 +829,7 @@
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "description": "Total number of sync requests that resulting in kdb+ returning an error",
+      "description": "Total number of files opened by the user. This does not count files opened by the kdb+ sub system.",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -864,9 +863,9 @@
       "nullText": null,
       "options": {},
       "postfix": "",
-      "postfixFontSize": "30%",
+      "postfixFontSize": "50%",
       "prefix": "",
-      "prefixFontSize": "30%",
+      "prefixFontSize": "50%",
       "rangeMaps": [
         {
           "from": "null",
@@ -885,18 +884,18 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kdb_sync_err_total{instance=\"$Server\"}",
-          "legendFormat": "Total Sync Errors",
+          "expr": "rate(kdb_sync_total{instance=\"$Server\"}[1m])",
+          "legendFormat": "Opened IPC File Descriptors",
           "refId": "A"
         }
       ],
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total Sync Errors",
+      "title": "Sync Requests / s",
       "transparent": true,
       "type": "singlestat",
-      "valueFontSize": "70%",
+      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -916,7 +915,7 @@
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "description": "Total number of async requests that resulting in kdb+ returning an error",
+      "description": "Total number of files opened by the user. This does not count files opened by the kdb+ sub system.",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -950,9 +949,9 @@
       "nullText": null,
       "options": {},
       "postfix": "",
-      "postfixFontSize": "30%",
+      "postfixFontSize": "50%",
       "prefix": "",
-      "prefixFontSize": "30%",
+      "prefixFontSize": "50%",
       "rangeMaps": [
         {
           "from": "null",
@@ -971,18 +970,18 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kdb_async_err_total{instance=\"$Server\"}",
-          "legendFormat": "Total Async Errors",
+          "expr": "rate(kdb_async_total{instance=\"$Server\"}[1m])",
+          "legendFormat": "Opened IPC File Descriptors",
           "refId": "A"
         }
       ],
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total Async Errors",
+      "title": "Async Requests / s",
       "transparent": true,
       "type": "singlestat",
-      "valueFontSize": "70%",
+      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -1067,11 +1066,11 @@
       "colorValue": false,
       "colors": [
         "#299c46",
-        "#FADE2A",
+        "#FF9830",
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "description": "Total number of HTTP get requests that resulting in kdb+ returning an error",
+      "description": "Total number of files opened by the user. This does not count files opened by the kdb+ sub system.",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -1105,9 +1104,9 @@
       "nullText": null,
       "options": {},
       "postfix": "",
-      "postfixFontSize": "30%",
+      "postfixFontSize": "50%",
       "prefix": "",
-      "prefixFontSize": "30%",
+      "prefixFontSize": "50%",
       "rangeMaps": [
         {
           "from": "null",
@@ -1126,18 +1125,18 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kdb_http_get_err_total{instance=\"$Server\"}",
-          "legendFormat": "Total HTTP Errors",
+          "expr": "rate(kdb_http_get_total{instance=\"$Server\"}[1m])",
+          "legendFormat": "Opened IPC File Descriptors",
           "refId": "A"
         }
       ],
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total HTTP Get Errors",
+      "title": "HTTP Get Requests / s",
       "transparent": true,
       "type": "singlestat",
-      "valueFontSize": "70%",
+      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -1153,11 +1152,11 @@
       "colorValue": false,
       "colors": [
         "#299c46",
-        "#FADE2A",
+        "#FF9830",
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "description": "Total number of HTTP post requests that resulting in kdb+ returning an error",
+      "description": "Total number of files opened by the user. This does not count files opened by the kdb+ sub system.",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -1191,9 +1190,9 @@
       "nullText": null,
       "options": {},
       "postfix": "",
-      "postfixFontSize": "30%",
+      "postfixFontSize": "50%",
       "prefix": "",
-      "prefixFontSize": "30%",
+      "prefixFontSize": "50%",
       "rangeMaps": [
         {
           "from": "null",
@@ -1212,18 +1211,18 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kdb_http_post_err_total{instance=\"$Server\"}",
-          "legendFormat": "Total HTTP Post Errors",
+          "expr": "rate(kdb_ws_total{instance=\"$Server\"}[1m])",
+          "legendFormat": "Opened IPC File Descriptors",
           "refId": "A"
         }
       ],
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total HTTP Post Errors",
+      "title": "Web Socket Messages / s",
       "transparent": true,
       "type": "singlestat",
-      "valueFontSize": "70%",
+      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -1239,11 +1238,11 @@
       "colorValue": false,
       "colors": [
         "#299c46",
-        "#FADE2A",
+        "#FF9830",
         "#d44a3a"
       ],
       "datasource": "Prometheus",
-      "description": "Total number of web socket connections that resulting in kdb+ returning an error",
+      "description": "Total number of files opened by the user. This does not count files opened by the kdb+ sub system.",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -1277,9 +1276,9 @@
       "nullText": null,
       "options": {},
       "postfix": "",
-      "postfixFontSize": "30%",
+      "postfixFontSize": "50%",
       "prefix": "",
-      "prefixFontSize": "30%",
+      "prefixFontSize": "50%",
       "rangeMaps": [
         {
           "from": "null",
@@ -1298,104 +1297,18 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kdb_ws_err_total{instance=\"$Server\"}",
-          "legendFormat": "Total Web Socket Errors",
+          "expr": "rate(kdb_ts_total{instance=\"$Server\"}[1m])",
+          "legendFormat": "Opened IPC File Descriptors",
           "refId": "A"
         }
       ],
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total Web Socket Errors",
+      "title": "Timer Calls / s",
       "transparent": true,
       "type": "singlestat",
-      "valueFontSize": "70%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "#FADE2A",
-        "#d44a3a"
-      ],
-      "datasource": "Prometheus",
-      "description": "Total number of timers that resulting in kdb+ returning an error",
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 5,
-        "x": 6,
-        "y": 21
-      },
-      "id": 24,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "30%",
-      "prefix": "",
-      "prefixFontSize": "30%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "kdb_ts_err_total{instance=\"$Server\"}",
-          "legendFormat": "Total Timer Errors",
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Total Timer Errors",
-      "transparent": true,
-      "type": "singlestat",
-      "valueFontSize": "70%",
+      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -1529,5 +1442,5 @@
   "timezone": "",
   "title": "kdb+",
   "uid": "Vixe03bZz",
-  "version": 1
+  "version": 2
 }

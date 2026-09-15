@@ -1,78 +1,47 @@
-# kdb+ interface for Prometheus-Exporter – example
+# Prometheus Exporter for KDB-X – example
 
-The demonstration below is described in full [here](../docs/examples.md). 
-For clarity, the following is a summary.
+The demonstration below is described in full [here](../docs/examples.md). The following is a summary.
 
 ## Requirements
 
-This demonstration requires a Docker instance capable of running a Unix-based container e.g. Docker Desktop for Mac/Linux/Windows 19 Pro with internet access.
+- KDB-X
+- Docker with Compose (Docker Desktop for Mac/Windows, or Docker Engine 20.10+ on Linux) with Internet access
 
 ## Setup
 
-Start a q session locally on port 8080, running `exporter.q` from this folder via the command
+Start the exporter on port 8080 from the repository root (or drop `QPATH` if you have run `install.sh`):
 
 ```bash
-q ../q/exporter.q -p 8080
+QPATH=$PWD q examples/exporter.q -p 8080
 ```
 
-This will expose the metrics associated with this process on port 8080 for consumption by Prometheus.
+This exposes the built-in metrics for this process at http://localhost:8080/metrics for consumption by Prometheus.
 
-Initialize a Docker environment containing a pre-configured Prometheus and Grafana setup from within the `DockerCompose` folder via
-
-**Windows/macOS**
-
-Initialize the Docker instance
+Start the pre-configured Prometheus and Grafana from the `DockerCompose` folder:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
-When finished running the demonstration stop the process using Ctrl-c or run
+and stop them with Ctrl-C or
 
 ```bash
-docker-compose down
-```
-
-**Linux**
-
-Initialize the Docker instance
-
-```bash
-docker-compose -f docker-compose-linux.yml up
-```
-
-Run the following when the environment is to be stopped
-
-```bash
-docker-compose -f docker-compose-linux.yml down
+docker compose down
 ```
 
 ## Example resource utilization
 
-Provided with the interface is the script `kdb_user_example.q`. This can be used to show an example of resources being consumed and monitored using Prometheus. The script will connect to the q session running on port 8080 as outlined above and attempt to use resources in a number of ways
+`kdb_user_example.q` connects to the exporter on port 8080, generates sync/async/HTTP/error traffic on a timer, and defines and updates three custom metrics (`example_table_rows`, `example_batch_rows`, `example_query_seconds`) through the module API:
 
 ```bash
-q kdb_user_example.q
+q examples/kdb_user_example.q
 ```
 
 ## Accessing Prometheus and Grafana
 
-Once the Docker instance has been initialized, Prometheus and Grafana should be running on the following ports
+- Prometheus: http://localhost:9090 — the expression `up` should be `1` for the `kdb` job
+- Grafana: http://localhost:3000 — username `admin`, password `pass`
 
-- Prometheus = http://localhost:9090
-- Grafana = http://localhost:3000
-
-On the Prometheus front end you can monitor specific metrics as desired. Executing `up` for example will allow a user to check that the exporter is 'up'. If the demo is running correctly this will be 1 for your configured kdb+ instance.
-
-To log into Grafana on port 3000 use the following credentials
-
-- Username = admin
-- Password = pass
-
-Once logged in, a pre-configured dashboard named `kdb+` should be available from the _Home_ dropdown. 
-This will give an example of monitoring, which can be be completed using the interface but is by no means exhaustive.
-
-The following is an example of a generated dashboard from the above workflow
+A pre-configured dashboard named `kdb+` is provisioned. It is an example of what can be monitored and is by no means exhaustive.
 
 ![Grafana](grafana.png)
-
