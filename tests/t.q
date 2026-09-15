@@ -58,3 +58,15 @@ prom.overRideInstHdlr[`before_ps;{[msg] fired::1b; prom.inc[`kdb_async_total;`];
 .z.ps "1+1"
 t)fired
 t)1=first exec first val from prom.metrics[] where metric=`kdb_async_total
+
+// histogram bucket counts stay long after observations (no int/long mix)
+t)7h=type value first exec val from prom.metrics[] where metric=`metric_B
+// enableInstHdlr is silent
+t)(::)~prom.enableInstHdlr`pg
+
+// setv must not collapse the val column (fresh gauge set first, then a counter created)
+prom.create([name:`metric_S;mtype:`gauge;help:"gauge set before anything else"])
+prom.setv[`metric_S;1f;`]
+t)0h=type exec val from prom.metrics[]
+t)(::)~@[prom.create;([name:`metric_T;mtype:`counter;help:"counter after setv";init:`]);0b]
+t)1=first exec first val from prom.metrics[] where metric=`metric_S

@@ -77,7 +77,7 @@ initMetricVals:{[mmeta;labels]
     (metric;mtype):raze mmeta[`name`mtype];
     if[mtype in `counter`gauge; initVal:enlist 0];
     if[`summary~mtype; initVal:()];
-    if[`histogram~mtype;buckets:raze mmeta[`buckets]; initVal:(buckets,0W)!(count[buckets]+1)#0i];
+    if[`histogram~mtype;buckets:raze mmeta[`buckets]; initVal:(buckets,0W)!(count[buckets]+1)#0];
     $[mtype in `summary`histogram;
         .z.M.metrics upsert ([metric:metric;mtype:mtype;total:0f;cnt:0;val:initVal;label:labels]);
         .z.M.metrics upsert ([metric:metric;mtype:mtype;val:initVal;label:labels])
@@ -95,7 +95,7 @@ initMetric:{[met;labels]
        }
 
 // upd functions for metrics table updates
-updVal:{enlist x[z;y]}
+updVal:{enlist (),x[z;y]}   / (), keeps val a list for every op (: would otherwise store an atom)
 updDict:{enlist x,k!v:(x k:key[x] where y<=key x)+1}
 
 

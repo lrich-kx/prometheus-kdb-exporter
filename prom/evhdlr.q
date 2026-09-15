@@ -159,5 +159,5 @@ enableInstHdlr:{[hdlrs]
     if[not all hdlrs in `po`pc`wo`wc`pg`ps`ph`pp`ws`ts;'"Handler override non-existent"];
     if[any hdlrs in activeStacks;'"Handle(s) already customized"];
     activeStacks,:hdlrs;
-    {defaultStacks[x][]} each hdlrs
+    {defaultStacks[x][]} each hdlrs;
     }
