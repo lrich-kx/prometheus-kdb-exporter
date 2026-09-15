@@ -9,6 +9,36 @@ All notable changes to this project are documented here. The format follows
 Rewrite of the exporter as a KDB-X module. See [docs/migration.md](docs/migration.md) for the
 upgrade path. Users on kdb+ 3.x/4.x should remain on [1.0.1](https://github.com/KxSystems/prometheus-kdb-exporter/releases/tag/1.0.1).
 
+#### Why a rewrite
+
+The 1.x exporter was a pair of scripts that took over every `.z.*` handler at load, kept every
+histogram and summary observation in memory and re-aggregated them on each scrape, and exposed a
+`.prom.updval[handle;operator;value]` API that accepted any operator on any metric type. That was
+adequate for a single monitored process but did not fit how KDB-X applications are built: as
+modules with private namespaces, loaded with `use`, that must not change process behaviour until
+asked. KDB-X also removed the reason for the standalone-script model, since the module framework
+lets any process opt in.
+
+2.0.0 keeps what worked in 1.x (the handler-wrapping design, the default metric set and names, the
+memory and handle hooks) and replaces the rest: a Prometheus-client-style API modelled on the
+[client library guidelines](https://prometheus.io/docs/instrumenting/writing_clientlibs/), labels as
+validated dictionaries, histograms bucketed on observe, bounded summaries, and per-handler opt-in
+instrumentation. The metric names are unchanged so existing dashboards keep working.
+
+#### Carried forward from unreleased 1.x work on `master`
+
+Twelve fixes were merged to `master` after 1.0.1 but never released. 2.0.0 is the first release to
+include their effect:
+
+- `memory_heap_peak_bytes` is a gauge, not a counter (#30), and the memory metric variable names
+  match their meaning (#27).
+- The websocket wrapper returns the wrapped handler's result, so `.z.ws` replies reach the client (#21).
+  The module code predated this fix and has been corrected in this release.
+- `install.sh` / `install.bat` fixes (#22, #24, #25, #26) are superseded by the rewritten scripts.
+- Docker demo `extra_hosts` for Linux (#29) is carried into the refreshed compose file.
+- CI moved from Travis to GitHub Actions (#19); docs imported from code.kx.com and shipped in the
+  release archive (#16, #17, #18); unused builds removed (#15).
+
 ### Breaking
 
 - Requires KDB-X. The module framework (`use`, `export`, `.z.M`) is not available in kdb+ 4.x.
@@ -76,17 +106,48 @@ upgrade path. Users on kdb+ 3.x/4.x should remain on [1.0.1](https://github.com/
 - `enableInstHdlr` echoed the handler names it set instead of returning null.
 - `serve[]` output ends with a newline; `promtool check metrics` rejected the previous output with
   "unexpected end of input stream".
+- Websocket wrapper dropped the handler's return value (regression against upstream #21; the
+  module was lifted from code that predated the fix).
 - Typos in user-facing error strings (`arguemnt`, `guage`, `histrogram`, `histograph`, `not allow`,
   `overwride`, `non-existant`).
 
-## [1.0.1]
+## [1.0.1] - 2022-11-28
 
-See the [1.0.1 release](https://github.com/KxSystems/prometheus-kdb-exporter/releases/tag/1.0.1).
+### Fixed
 
-## [1.0.0]
+- `before_ph` / `after_ph` were assigned the HTTP POST hooks, so GET requests were counted and timed
+  as POSTs, and the POST hooks themselves were never set (#14).
 
-See the [1.0.0 release](https://github.com/KxSystems/prometheus-kdb-exporter/releases/tag/1.0.0).
+### Changed
+
+- Histogram `le` buckets are cumulative and include the `+Inf` bucket, as the exposition format
+  requires (#13).
+- Request durations are reported in seconds to match the `_seconds` metric names (#13).
+
+### Added
+
+- `-noinit` command-line flag to load `exporter.q` without wiring the `.z.*` handlers, so a process
+  can define its own handlers first and call `.prom.init[]` afterwards (#11).
+
+## [1.0.0] - 2020-08-11
+
+Initial stable release, promoting 1.0.0-rc.1 unchanged. Standalone `q/exporter.q` script exposing
+memory, symbol, handle, request-count, request-duration (summary and histogram) and error-count
+metrics for a kdb+ process on `/metrics`; `q/extract.q` library with `.prom.newmetric`,
+`.prom.addmetric`, `.prom.updval` and overridable `.prom.on_*` / `before_*` / `after_*` hooks; Docker
+Compose demo with Prometheus and a provisioned Grafana dashboard; `install.sh` / `install.bat`.
+
+## [1.0.0-rc.1] - 2020-05-21
+
+Repository standardisation, Travis build producing release archives, directory restructure into
+`q/`, `docs/` and `examples/`, install script instructions (#4, #5, #7, #9, #10).
+
+## [1.0.0-rc] - 2020-05-12
+
+Initial release candidate (#1, #3).
 
 [2.0.0]: https://github.com/KxSystems/prometheus-kdb-exporter/compare/1.0.1...master
 [1.0.1]: https://github.com/KxSystems/prometheus-kdb-exporter/compare/1.0.0...1.0.1
-[1.0.0]: https://github.com/KxSystems/prometheus-kdb-exporter/releases/tag/1.0.0
+[1.0.0]: https://github.com/KxSystems/prometheus-kdb-exporter/compare/1.0.0-rc.1...1.0.0
+[1.0.0-rc.1]: https://github.com/KxSystems/prometheus-kdb-exporter/compare/1.0.0-rc...1.0.0-rc.1
+[1.0.0-rc]: https://github.com/KxSystems/prometheus-kdb-exporter/releases/tag/1.0.0-rc

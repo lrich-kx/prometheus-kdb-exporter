@@ -97,9 +97,9 @@ Landmines we have stepped on here. Check the list before "simplifying" the code 
   initialise as longs (`#0`, not `#0i`) so bucket counts stay a simple list.
 - **`type each` on a simple list returns atom types (`-7h`), not the list type (`7h`).** Use `type` on
   the list itself when asserting column types in tests.
-- **`.Q.m.SP` is fixed to the q install location and is not moved by the `QHOME` env var.** The docs say
-  the default is `$QHOME/mod`; on a real install it is wherever q lives (e.g. `~/.kx/mod`). That is why
-  `install.sh` asks q for the path instead of assuming. Use `QPATH=<repo root>` for development.
+- **The default module search path (`.Q.m.SP`) is resolved relative to the KDB-X runtime**, e.g.
+  `~/.kx/mod` for a user install; `QHOME` is no longer required. Do not hard-code `$QHOME/mod` in docs
+  or scripts: `install.sh` asks q for the path, and development uses `QPATH=<repo root>`.
 - **`after_*` hooks are triadic (`[tmp;msg;res]`), `on_*` and `before_*` are monadic.** Overriding an
   `after_*` hook with a one-argument lambda gives `'rank` on the next request, not at override time.
 - **`x)` at the start of a line dispatches to `.x.e`.** That is how the `t)` assertions in

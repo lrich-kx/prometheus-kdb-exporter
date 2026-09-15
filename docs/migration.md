@@ -60,7 +60,7 @@ live; nothing else is instrumented until you call `enableInstHdlr`. The load-ord
 
 | v1 (`.prom` globals) | v2 (`` prom:use`prom ``) | Notes |
 |---|---|---|
-| `q q/exporter.q -p 8080` / `\l exporter.q` / `\l extract.q` | `` prom:use`prom `` inside your own process | No standalone script. Module must be on the module search path (`.Q.m.SP`, typically `$QHOME/mod`) or on `QPATH`. See `examples/exporter.q` for a default-metrics runner. |
+| `q q/exporter.q -p 8080` / `\l exporter.q` / `\l extract.q` | `` prom:use`prom `` inside your own process | No standalone script. Module must be on the module search path (`.Q.m.SP`, resolved relative to the KDB-X runtime) or on `QPATH`. See `examples/exporter.q` for a default-metrics runner. |
 | `-noinit` command-line flag | not needed | v2 never wires `.z.*` handlers at load. |
 | `.prom.newmetric[name;type;labelnames;help]` | `prom.create ([name:..;mtype:..;labels:..;help:..;buckets/quantiles/cacheLength:..;init:..])` | One dictionary argument. Type-specific parameters (`buckets`, `quantiles`, `cacheLength`) live on the definition, not per instance. |
 | `.prom.addmetric[metric;labelvals;params;startval]` | `prom.init[metric;labelDict]`, or just update the instance | Returns nothing. Instances are addressed by `(metric;labels)`, not by a returned handle. `params` moves to `create`; `startval` is gone (instances start at 0 / empty). Instances auto-create on first update. |

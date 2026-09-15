@@ -73,3 +73,9 @@ t)1=first exec first val from prom.metrics[] where metric=`metric_S
 
 // exposition text ends with a newline (promtool rejects a missing terminator)
 t)"\n"~last prom.serve[]
+
+// websocket wrapper must return the handler's result (upstream #21 regression guard)
+.z.ws:{value x}
+prom.enableInstHdlr`ws;
+t)2~.z.ws "1+1"
+/ (kdb_ws_total is not asserted here: before_ws was replaced by a no-op in the override test above)

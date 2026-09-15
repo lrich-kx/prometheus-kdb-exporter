@@ -37,7 +37,7 @@ commonly via Grafana. The repo includes [an example](examples) of this using Doc
 ## Quick start
 
 Install the module onto the KDB-X module search path. The install scripts ask `q` for its default
-search path (`.Q.m.SP`, typically `$QHOME/mod`) and copy the module there as `prom/`; pass a directory
+search path (`.Q.m.SP`, resolved relative to the KDB-X runtime) and copy the module there as `prom/`; pass a directory
 to install somewhere else:
 
 ```bash

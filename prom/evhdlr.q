@@ -75,7 +75,7 @@ ps:{[f;msg]tmp:before_ps msg;res:f msg;after_ps[tmp;msg;res];}
 // after_ph summaries will be available and served for subsequent endpoint polls - i.e. summary and histogram counts will be [kdb_http_get_total] -1
 ph:{[f;msg]tmp:before_ph msg;if[METRICS_ENDPOINT~msg 0;on_poll[msg]];res:f msg;after_ph[tmp;msg;res];res} 
 pp:{[f;msg]tmp:before_pp msg;res:f msg;after_pp[tmp;msg;res];res}                                         
-ws:{[f;msg]tmp:before_ws msg;res:f msg;after_ws[tmp;msg;res];}
+ws:{[f;msg]tmp:before_ws msg;res:f msg;after_ws[tmp;msg;res];res}   / must return res: .z.ws replies to the client with it (upstream #21)
 ts:{[f;dtm]tmp:before_ts dtm;res:f dtm;after_ts[tmp;dtm;res];}
 
 // on metrics poll set memory metrics (.Q.w[])

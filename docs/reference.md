@@ -36,7 +36,7 @@ Instrument event handlers<br>
 
 The exporter is a [KDB-X module](https://code.kx.com/kdb-x/modules/module-framework/quickstart.html). It requires KDB-X; it does not load on kdb+ 4.x (use the [1.0.1 release](https://github.com/KxSystems/prometheus-kdb-exporter/releases/tag/1.0.1) there).
 
-The `prom` directory must be on the module search path (`.Q.m.SP`, typically `$QHOME/mod`); `install.sh`/`install.bat` ask `q` for that path and copy the module there. Alternatively point `QPATH` at the directory that contains `prom/`, for example the repository root:
+The `prom` directory must be on the module search path (`.Q.m.SP`, resolved relative to the KDB-X runtime, e.g. `~/.kx/mod`); `install.sh`/`install.bat` ask `q` for that path and copy the module there. Alternatively point `QPATH` at the directory that contains `prom/`, for example the repository root:
 
 ```bash
 QPATH=/path/to/prometheus-kdb-exporter q -p 8080
