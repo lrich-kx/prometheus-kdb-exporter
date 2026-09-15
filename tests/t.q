@@ -70,3 +70,6 @@ prom.setv[`metric_S;1f;`]
 t)0h=type exec val from prom.metrics[]
 t)(::)~@[prom.create;([name:`metric_T;mtype:`counter;help:"counter after setv";init:`]);0b]
 t)1=first exec first val from prom.metrics[] where metric=`metric_S
+
+// exposition text ends with a newline (promtool rejects a missing terminator)
+t)"\n"~last prom.serve[]

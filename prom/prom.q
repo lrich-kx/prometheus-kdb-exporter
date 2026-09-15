@@ -168,7 +168,7 @@ fmtMetric:{[data];
 // write all metrics to a servable string
 // for each metric, fmt each submetric (i.e. each label) - for a single metric there can be multiple row values, one per label set and add the header
 writeMetric:{[met] "\n" sv writeHdr[met],raze fmtMetric each select from .z.M.metrics where metric=met}
-serve:{if[not count mets:distinct exec metric from .z.M.metrics;:""]; "\n" sv writeMetric each mets};
+serve:{if[not count mets:distinct exec metric from .z.M.metrics;:""]; ("\n" sv writeMetric each mets),"\n"};   / exposition format requires a terminating newline
 
 // -------------------------------------------------------------------------------------- //
 //                         Handler Override and Packaged Defaults                          //

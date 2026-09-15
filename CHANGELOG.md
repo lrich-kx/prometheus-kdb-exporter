@@ -72,6 +72,8 @@ upgrade path. Users on kdb+ 3.x/4.x should remain on [1.0.1](https://github.com/
   metrics) failed with `'type`.
 - Histogram bucket counts initialised as ints and became longs after the first observation.
 - `enableInstHdlr` echoed the handler names it set instead of returning null.
+- `serve[]` output ends with a newline; `promtool check metrics` rejected the previous output with
+  "unexpected end of input stream".
 - Typos in user-facing error strings (`arguemnt`, `guage`, `histrogram`, `histograph`, `not allow`,
   `overwride`, `non-existant`).
 
