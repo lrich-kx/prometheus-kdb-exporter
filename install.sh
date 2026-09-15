@@ -1,83 +1,40 @@
 #!/bin/bash
+# Install the prom module onto the KDB-X module search path so it loads with:  prom:use`prom
+#
+#   ./install.sh            install into the first entry of q's default module search path
+#                           (asks q for .Q.m.SP; falls back to $QHOME/mod if q is not on PATH)
+#   ./install.sh <dir>      install into <dir>/prom instead
+#
+# To run from a checkout without installing, set QPATH to the repository root instead.
 
-if [ -z "$QHOME" ]
-then
-    echo "ERROR: QHOME environment not set. Installation failed."
+set -e
+
+SRC_DIR="$(cd "$(dirname "$0")" && pwd)/prom"
+if [ ! -f "$SRC_DIR/init.q" ]; then
+    echo "ERROR: '$SRC_DIR/init.q' not found; run this script from the repository root"
     exit 1
 fi
 
-echo "Detected System"
-echo "* OS: $OSTYPE"
-echo "* TYPE: $HOSTTYPE"
-echo "* MACHINE TYPE: $MACHTYPE"
+MOD_DIR="$1"
 
-# DETECT OS TYPE BEING USED
-Q_PATH_SEP="/"
-Q_HOST_TYPE=""
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        Q_HOST_TYPE="l"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # Mac OSX
-        Q_HOST_TYPE="m"
-elif [[ "$OSTYPE" == "cygwin" ]]; then
-        # POSIX compatibility layer and Linux environment emulation for Windows
-        Q_HOST_TYPE="w"
-        Q_PATH_SEP="\\"
-elif [[ "$OSTYPE" == "msys" ]]; then
-        # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
-        Q_HOST_TYPE="w"
-        Q_PATH_SEP="\\"
-elif [[ "$OSTYPE" == "win32" ]]; then
-        Q_HOST_TYPE="w"
-        Q_PATH_SEP="\\"
-elif [[ "$OSTYPE" == "freebsd"* ]]; then
-        Q_HOST_TYPE="l"
-else
-        echo "ERROR: OSTYPE $OSTYPE not currently supported by this script"
-        echo "Please view README.md for installation instructions"
+if [ -z "$MOD_DIR" ] && command -v q >/dev/null 2>&1; then
+    # ask q where it looks for modules; ignore licence/startup noise and keep only an absolute path
+    MOD_DIR="$(echo '-1 first .Q.m.SP; exit 0' | q -q 2>/dev/null | grep -m1 '^/' || true)"
+fi
+
+if [ -z "$MOD_DIR" ]; then
+    if [ -z "$QHOME" ]; then
+        echo "ERROR: could not determine the module search path (q not on PATH and QHOME not set)."
+        echo "       Re-run as: ./install.sh <module search dir>"
         exit 1
+    fi
+    MOD_DIR="$QHOME/mod"
 fi
 
-# DETECT WHETHER 32 OR 64 BIT
-Q_MACH_TYPE=""
-if [[ "$HOSTTYPE" == "x86_64" ]]; then
-    Q_MACH_TYPE="64"
-else
-    Q_MACH_TYPE="32"
-fi
+DEST_DIR="$MOD_DIR/prom"
+echo "Installing prom module to $DEST_DIR ..."
+mkdir -p "$DEST_DIR"
+cp "$SRC_DIR"/*.q "$DEST_DIR/"
 
-Q_SCRIPT_DIR=${QHOME}${Q_PATH_SEP}
-Q_SHARED_LIB_DIR="${QHOME}${Q_PATH_SEP}${Q_HOST_TYPE}${Q_MACH_TYPE}${Q_PATH_SEP}"
-
-# check destination directory exists
-if [ ! -d "$Q_SCRIPT_DIR" ]; then
-    echo "ERROR: Directory '$Q_SCRIPT_DIR' does not exist"
-    exit 1
-fi
-if [ -d lib ]; then
-  if [ ! -d "$Q_SHARED_LIB_DIR" ]; then
-    echo "ERROR: Directory '$Q_SHARED_LIB_DIR' does not exist"
-    exit 1
-  fi
-fi
-
-if [ -d q ]; then
-  echo "Copying q script to $Q_SCRIPT_DIR ..."
-  cp q/* $Q_SCRIPT_DIR
-  if [ $? -ne 0 ]; then
-    echo "ERROR: copy failed"
-    exit 1
-  fi
-fi
-
-if [ -d lib ]; then
-  echo "Copying shared lib to $Q_SHARED_LIB_DIR ..."
-  cp lib/* $Q_SHARED_LIB_DIR
-  if [ $? -ne 0 ]; then
-    echo "ERROR: copy failed"
-    exit 1
-  fi
-fi
-
-echo "Install complete"
+echo "Install complete. Load with:  prom:use\`prom"
 exit 0

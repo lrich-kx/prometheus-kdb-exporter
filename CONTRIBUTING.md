@@ -30,6 +30,20 @@ Please keep your fork up-to date to reduce the risk of conflicts occurring when 
 
 It can also be worth considering if your changes may also require changes to documentation or dependent systems.
 
+### Running the tests
+
+The tests need a KDB-X `q` on your `PATH`. From the repository root:
+
+```bash
+QPATH=$PWD q tests/t.q -q </dev/null
+```
+
+Each `t)` line is an assertion; a passing run prints nothing beyond the module's load message and
+exits 0. A failing assertion prints its expression. Please add assertions for any behaviour you change.
+
+To check the exposition format against Prometheus itself, start `examples/exporter.q` on a port and run
+`curl -s localhost:8080/metrics | promtool check metrics`.
+
 ### Submitting Changes
 
 When committing changes, please provide a descriptive commit comment of why the change was made (e.g. 'fixed bug' is not a suitable comment as it doesn't describe which bug).  
@@ -48,5 +62,7 @@ In order to have your pull request approved in a timely manner, please provide c
 
 [Grafana Documentation](https://grafana.com/docs/grafana/latest/)
 
-[KDB+ and q documentation](https://code.kx.com/q/)
+[KDB-X documentation](https://code.kx.com/kdb-x/)
+
+[KDB-X module framework](https://code.kx.com/kdb-x/modules/module-framework/quickstart.html)
 

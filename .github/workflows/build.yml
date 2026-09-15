@@ -22,9 +22,9 @@ jobs:
       - name: Create artifacts
         run: |
           mkdir artifacts &&
-          tar  -zcvf artifacts/prometheus-exporter-linux.tgz README.md install.sh LICENSE q examples docs &&
-          tar  -zcvf artifacts/prometheus-exporter-macos.tgz README.md install.sh LICENSE q examples docs &&
-          zip -r artifacts/prometheus-exporter-windows.zip README.md install.bat LICENSE q examples docs
+          tar  -zcvf artifacts/prometheus-exporter-linux.tgz README.md CHANGELOG.md install.sh LICENSE prom examples docs &&
+          tar  -zcvf artifacts/prometheus-exporter-macos.tgz README.md CHANGELOG.md install.sh LICENSE prom examples docs &&
+          zip -r artifacts/prometheus-exporter-windows.zip README.md CHANGELOG.md install.bat LICENSE prom examples docs
  
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v6
