@@ -130,16 +130,51 @@ tests are run locally before pushing and the PR description says so.
 
 ## Release model
 
-Single public repository, no mirror.
+Single public repository, no mirror. `master` on `KxSystems/prometheus-kdb-exporter` is canonical.
 
 - Work on a branch, open a PR against `master`. External contributors fork and PR.
 - User-visible changes get a bullet under `[Unreleased]` in [CHANGELOG.md](CHANGELOG.md) in the same
   commit. Internal refactors and test-only changes do not.
-- To release: rename `[Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD`, fix the compare links at the bottom,
-  merge, tag `X.Y.Z` (no `v` prefix, matching `1.0.0` and `1.0.1`), and create a GitHub Release from
-  the tag. [build.yml](.github/workflows/build.yml) attaches the linux/macos/windows archives.
 - Semver: a change to the `export` dict, a default metric name or label key, or an env var is **major**;
-  new API or new default metrics are **minor**; everything else is **patch**.
+  new API or new default metrics are **minor**; everything else is **patch**. Tags have no `v` prefix
+  (`1.0.0`, `1.0.1`, `2.0.0`).
+- There is no version number in the code. The tag and the CHANGELOG heading are the only places a
+  version appears, so a release is a CHANGELOG edit plus a tag plus a GitHub Release.
+
+### Cutting a release
+
+Needs write access to `KxSystems/prometheus-kdb-exporter`. [build.yml](.github/workflows/build.yml)
+builds the archives on every push to `master` but only **uploads them to a release when a GitHub
+Release is created** (`on: release: types: [created]`), and both jobs are gated on
+`github.repository == 'KxSystems/prometheus-kdb-exporter'`, so nothing below can be rehearsed on a fork.
+
+1. **Preconditions on `master`**: `QPATH=$PWD q tests/t.q -q </dev/null` is green; the served text
+   parses with `promtool`; `docs/reference.md` matches the `export` dict; every user-visible change since
+   the last tag has a bullet under `[Unreleased]` (`git log <last-tag>..master` is the checklist).
+2. **Edit `CHANGELOG.md`** on a release branch:
+   - rename `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` (for 2.0.0 the heading already reads
+     `## [2.0.0] - unreleased`; replace `unreleased` with the date);
+   - change the bottom link `[X.Y.Z]: .../compare/<prev>...master` to `.../compare/<prev>...X.Y.Z`;
+   - add a fresh empty `## [Unreleased]` above it with a link `[Unreleased]: .../compare/X.Y.Z...master`.
+3. **PR and merge** that change to `master` (`gh pr create`, review, `gh pr merge --squash`).
+4. **Tag and release** from the merge commit:
+   ```bash
+   git checkout master && git pull
+   git tag -a X.Y.Z -m "X.Y.Z"
+   git push origin X.Y.Z
+   # release notes = the X.Y.Z section of CHANGELOG.md, extracted to a file
+   gh release create X.Y.Z --title "X.Y.Z" --notes-file /tmp/notes-X.Y.Z.md
+   ```
+   Creating the release triggers `build.yml`, which attaches
+   `prometheus-exporter-{linux,macos,windows}-X.Y.Z.{tgz,zip}`.
+5. **Verify**: `gh run list --workflow build.yml --limit 1` is green and
+   `gh release view X.Y.Z` lists three assets. Download one and check it contains `prom/`, `docs/`,
+   `examples/`, `CHANGELOG.md`, `install.sh` or `install.bat`.
+6. **Announce** in the PR or issue that prompted the release, and close any issues the CHANGELOG bullets
+   reference.
+
+If the workflow fails after the release exists, fix it on `master`, then re-run the failed job from
+the Actions tab (or `gh run rerun <id>`); do not delete and recreate the tag.
 
 ## Before committing
 
