@@ -42,6 +42,8 @@ upgrade path. Users on kdb+ 3.x/4.x should remain on [1.0.1](https://github.com/
 - `tests/t.q` assertion suite (`QPATH=$PWD q tests/t.q`).
 - `docs/migration.md` upgrade guide and a Claude Code skill at `.claude/skills/prom-migrate/`.
 - `CHANGELOG.md`.
+- `CLAUDE.md` (with `AGENTS.md` symlink) recording project conventions, q gotchas, testing and the
+  release checklist for maintainers and coding agents.
 
 ### Changed
 

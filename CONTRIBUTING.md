@@ -16,6 +16,14 @@ You may also wish to 'star' the project (click the star link on the project main
 
 ## Contributing as a developer
 
+### Conventions for agents and maintainers
+
+[CLAUDE.md](CLAUDE.md) holds the project conventions: module boundaries, what counts as a contract
+change, q gotchas found in this codebase, how to test, and the release checklist. `AGENTS.md` is a
+symlink to the same file for tools that look for that name (GitHub's web view shows the symlink target
+rather than the content; open `CLAUDE.md` directly). Read it before making changes, whether you are a
+person or a coding agent.
+
 ### Getting Started
 
 If you are looking to lend your development skills to the project, you can check the projects issue list to see what people may be looking for. Developers who already have an idea of what they might like to change should consider creating an issue to indicate to others of the work they are undertaking and commence any discussion on the possible solutions.
