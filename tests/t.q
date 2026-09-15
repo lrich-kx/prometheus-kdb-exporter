@@ -35,7 +35,7 @@ t)0=.[prom.dec; (`metric_A;`); 0]
 prom.decr[`metric_C;5;`];
 t)10=first exec first val from prom.metrics[] where metric=`metric_C
 
-// handler overrides// serving format (Prometheus text exposition)
+// serving format (Prometheus text exposition)
 prom.obs[`metric_D;0.2;([method:"GET";status:"200";handler:"/summ"])]
 prom.obs[`metric_B;0.2;([method:"GET";status:"200";handler:"/hist"])]
 s:prom.serve[]
