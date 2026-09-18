@@ -45,3 +45,12 @@ q examples/kdb_user_example.q
 A pre-configured dashboard named `kdb+` is provisioned. It is an example of what can be monitored and is by no means exhaustive.
 
 ![Grafana](grafana.png)
+
+## A multi-process example
+
+The example above is a single process. [tick-x/](tick-x/) instruments every node of a
+real multi-process kdb-tick stack — the
+[kdbx-tick-reference-architecture](https://github.com/KxSystems/kdbx-tick-reference-architecture)
+`tick-x` variant (tickerplant, feedhandler, RDB, chained RDB, IDB, HDB, RTE and gateway) —
+without modifying any of that repo's own source, plus a Grafana dashboard and a randomized
+load generator. See [tick-x/README.md](tick-x/README.md).

@@ -75,3 +75,19 @@ q examples/kdb_user_example.q
 ```
 
 Within a few seconds the panels on the Grafana `kdb+` dashboard start to move, and the `example_*` metrics appear at http://localhost:8080/metrics.
+
+
+## A multi-process example: instrumenting a real kdb-tick stack
+
+Everything above instruments a single process. [examples/tick-x/](../examples/tick-x/)
+instruments all eight nodes of the
+[kdbx-tick-reference-architecture](https://github.com/KxSystems/kdbx-tick-reference-architecture)
+`tick-x` variant — tickerplant, feedhandler, RDB (writedown role), chained RDB (query
+role), IDB, HDB, RTE and gateway — via thin wrapper scripts that load each node's real
+source unchanged and instrument it from the outside, without modifying that repo. It adds
+default metrics on every node plus custom operational and domain metrics on the gateway,
+RDB, IDB, HDB and RTE, a Grafana dashboard covering the whole stack, and a randomized
+query-load generator with fault injection. See
+[examples/tick-x/README.md](../examples/tick-x/README.md) for the full walkthrough — it's
+the reference to follow when instrumenting an existing multi-process kdb application
+rather than starting a new one from `examples/exporter.q`.

@@ -74,6 +74,12 @@ include their effect:
 - `CHANGELOG.md`.
 - `CLAUDE.md` (with `AGENTS.md` symlink) recording project conventions, q gotchas, testing and the
   release checklist for maintainers and coding agents.
+- `examples/tick-x/`: a multi-process example instrumenting every node of the
+  [kdbx-tick-reference-architecture](https://github.com/KxSystems/kdbx-tick-reference-architecture)
+  `tick-x` stack (tickerplant, feedhandler, RDB, chained RDB, IDB, HDB, RTE, gateway) via
+  wrapper scripts that load each node's own source unmodified, default metrics on every
+  node plus custom operational and domain metrics on the gateway/RDB/IDB/HDB/RTE, a
+  Grafana dashboard, and a randomized load generator with fault injection.
 
 ### Changed
 
