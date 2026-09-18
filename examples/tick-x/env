@@ -1,0 +1,25 @@
+# examples/tick-x/env - demo-tuning overrides for the tick-x reference stack.
+#
+# Sourced by startup.sh AFTER tick-x's own samples/sample_env (all ports, paths and
+# directories come from there — see that file's own header). Everything below either
+# overrides one of its values for demo purposes, or points at this repo's instrumentation.
+#
+# PROM_ROOT is exported by startup.sh before this file is sourced.
+
+# Faster feed + flush so the dashboard moves visibly within a couple of minutes instead
+# of the production-realistic tick-x defaults (1 row/table/min, 5-minute writedown).
+export FH_TIMER=1000            # tick-x default: 60000
+export FLUSH_INTV_MIN=1         # tick-x default: 5 (also sets the RDB's own \t)
+
+# tick-x exports RTE_ENRICH_FILE but its own startup.sh never passes it as -enrichFile,
+# so `weatherHeatIndex` is empty out of the box — our startup.sh does pass it (see there).
+# No override needed here; the value from sample_env is used as-is.
+
+# This repo's module + the wrapper/common.q instrumentation layer.
+#
+# QPATH REPLACES the KDB-X module search path (.Q.m.SP) rather than extending it, so
+# $HOME/.kx/mod must stay on it too, or every tick-x node's `use`kx.log`/`use`kx.rest`
+# breaks. Override QPATH yourself before sourcing this file if your modules (or this
+# checkout of prometheus-kdb-exporter) live somewhere else.
+export QPATH="${QPATH:-$PROM_ROOT:$HOME/.kx/mod}"
+export INSTR_DIR="$PROM_ROOT/examples/tick-x"
