@@ -1,0 +1,31 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # One target per tick-x node, each labeled `proc` so a single dashboard query can
+  # break out by node (e.g. `sum by (proc) (...)`). host.docker.internal reaches the
+  # host's q processes from inside the container (needs host-gateway, see compose file).
+  - job_name: 'tickx'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:5010']
+        labels: { proc: 'TP' }
+      - targets: ['host.docker.internal:5011']
+        labels: { proc: 'RDB' }
+      - targets: ['host.docker.internal:5012']
+        labels: { proc: 'HDB' }
+      - targets: ['host.docker.internal:5013']
+        labels: { proc: 'GW' }
+      - targets: ['host.docker.internal:5014']
+        labels: { proc: 'FH' }
+      - targets: ['host.docker.internal:5015']
+        labels: { proc: 'IDB' }
+      - targets: ['host.docker.internal:5016']
+        labels: { proc: 'RTE' }
+      - targets: ['host.docker.internal:5017']
+        labels: { proc: 'CHAINED_RDB' }
